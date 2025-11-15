@@ -1,45 +1,64 @@
+let assignment = {
+  id: 1,
+  title: "NodeJS Assignment",
+  description: "Create a NodeJS server with ExpressJS",
+  due: "2021-10-10",
+  completed: false,
+  score: 0,
+};
+
+let moduleObj = {
+  id: 2,
+  name: "Module",
+  description: "Example of a module",
+  course: "CS4550",
+};
+
 export default function WorkingWithObjects(app) {
-  // Simple variables for lab exercises
-  let assignment = {
-    title: "NodeJS Assignment"
-  };
 
-  let module = {
-    id: 123,
-    name: "HTTP Server Module"
-  };
-
-  // -------------------------
-  // ALREADY EXISTING ROUTES
-  // -------------------------
-
-  // Get full assignment object
+  // FETCH assignment object
   app.get("/lab5/assignment", (req, res) => {
     res.json(assignment);
   });
 
-  // Get assignment title
+  // FETCH assignment title
   app.get("/lab5/assignment/title", (req, res) => {
-    res.send(assignment.title);
+    res.json(assignment.title);
   });
 
-  // -------------------------
-  // NEW REQUIRED ROUTES
-  // -------------------------
-
-  // 1. Update the title
-  app.put("/lab5/assignment/title/:newTitle", (req, res) => {
-    assignment.title = req.params.newTitle;
-    res.send(assignment.title);
+  // UPDATE assignment title (React client uses this)
+  app.get("/lab5/assignment/title/:title", (req, res) => {
+    const { title } = req.params;
+    assignment.title = title;
+    res.json(assignment);   // IMPORTANT!!!
   });
 
-  // 2. Get module
+  // UPDATE score
+  app.get("/lab5/assignment/score/:score", (req, res) => {
+    const { score } = req.params;
+    assignment.score = parseInt(score);
+    res.json(assignment);
+  });
+
+  // UPDATE completed
+  app.get("/lab5/assignment/completed/:completed", (req, res) => {
+    const { completed } = req.params;
+    assignment.completed = completed === "true";
+    res.json(assignment);
+  });
+
+  // MODULE ROUTES
   app.get("/lab5/module", (req, res) => {
-    res.json(module);
+    res.json(moduleObj);
   });
 
-  // 3. Get module name
   app.get("/lab5/module/name", (req, res) => {
-    res.send(module.name);
+    res.json(moduleObj.name);
+  });
+
+  app.get("/lab5/module/name/:name", (req, res) => {
+    const { name } = req.params;
+    moduleObj.name = name;
+    res.json(moduleObj);
   });
 }
