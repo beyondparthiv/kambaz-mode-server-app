@@ -6,7 +6,9 @@ export default function UserRoutes(app, db) {
 
   const signin = async (req, res) => {
     const { username, password } = req.body;
+    console.log("🔐 Signin attempt:", username);
     const currentUser = await dao.findUserByCredentials(username, password);
+    console.log("👤 Found user:", currentUser ? currentUser._id : "null");
     if (currentUser) {
       req.session["currentUser"] = currentUser;
       res.json(currentUser);
@@ -60,7 +62,9 @@ export default function UserRoutes(app, db) {
   };
 
   const findAllUsers = async (req, res) => {
+    console.log("📋 Finding all users...");
     const users = await dao.findAllUsers();
+    console.log(`✅ Found ${users.length} users`);
     res.json(users);
   };
 
