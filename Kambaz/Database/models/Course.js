@@ -2,6 +2,7 @@ import mongoose from "mongoose";
 
 const courseSchema = new mongoose.Schema(
   {
+    _id: { type: String, required: true },
     name: { type: String, required: true },
     number: { type: String },
     startDate: { type: String },
@@ -12,7 +13,7 @@ const courseSchema = new mongoose.Schema(
     description: { type: String },
     author: { type: String },
   },
-  { collection: "courses" }
+  { collection: "courses", _id: false }
 );
 
 export default mongoose.model("Course", courseSchema);

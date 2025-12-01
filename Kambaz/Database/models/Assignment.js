@@ -2,6 +2,7 @@ import mongoose from "mongoose";
 
 const assignmentSchema = new mongoose.Schema(
   {
+    _id: { type: String },
     title: { type: String, required: true },
     course: { type: String, required: true },
     description: { type: String },
@@ -9,7 +10,7 @@ const assignmentSchema = new mongoose.Schema(
     dueDate: { type: Date },
     availableDate: { type: Date },
   },
-  { collection: "assignments" }
+  { collection: "assignments", _id: false }
 );
 
 export default mongoose.model("Assignment", assignmentSchema);
