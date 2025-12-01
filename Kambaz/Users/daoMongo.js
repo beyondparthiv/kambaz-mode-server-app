@@ -1,6 +1,7 @@
 // Kambaz/Users/daoMongo.js - MongoDB implementation
 import User from "../Database/models/User.js";
 import Enrollment from "../Database/models/Enrollment.js";
+import mongoose from "mongoose";
 import { v4 as uuidv4 } from "uuid";
 
 export default function UsersDaoMongo() {
@@ -15,7 +16,11 @@ export default function UsersDaoMongo() {
   };
 
   const findAllUsers = async () => {
-    return await User.find({}).lean();
+    console.log("🔍 Querying database:", mongoose.connection.db.databaseName);
+    console.log("🔍 Querying collection:", User.collection.name);
+    const users = await User.find({}).lean();
+    console.log("🔍 Raw query result:", users);
+    return users;
   };
 
   const findUserById = async (userId) => {
@@ -27,7 +32,12 @@ export default function UsersDaoMongo() {
   };
 
   const findUserByCredentials = async (username, password) => {
-    return await User.findOne({ username, password }).lean();
+    console.log("🔍 findUserByCredentials - database:", mongoose.connection.db.databaseName);
+    console.log("🔍 findUserByCredentials - collection:", User.collection.name);
+    console.log("🔍 findUserByCredentials - query:", { username, password });
+    const user = await User.findOne({ username, password }).lean();
+    console.log("🔍 findUserByCredentials - result:", user);
+    return user;
   };
 
   const updateUser = async (userId, updates) => {
