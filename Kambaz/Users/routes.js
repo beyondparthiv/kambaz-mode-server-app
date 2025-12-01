@@ -1,12 +1,12 @@
-// Kambaz/Users/routes.js - ADD THIS ROUTE
-import UsersDao from "./dao.js";
+// Kambaz/Users/routes.js
+import UsersDaoMongo from "./daoMongo.js";
 
 export default function UserRoutes(app, db) {
-  const dao = UsersDao(db);
+  const dao = UsersDaoMongo();
 
-  const signin = (req, res) => {
+  const signin = async (req, res) => {
     const { username, password } = req.body;
-    const currentUser = dao.findUserByCredentials(username, password);
+    const currentUser = await dao.findUserByCredentials(username, password);
     if (currentUser) {
       req.session["currentUser"] = currentUser;
       res.json(currentUser);
@@ -15,13 +15,13 @@ export default function UserRoutes(app, db) {
     }
   };
 
-  const signup = (req, res) => {
-    const user = dao.findUserByUsername(req.body.username);
+  const signup = async (req, res) => {
+    const user = await dao.findUserByUsername(req.body.username);
     if (user) {
       res.status(400).json({ message: "Username already taken" });
       return;
     }
-    const currentUser = dao.createUser(req.body);
+    const currentUser = await dao.createUser(req.body);
     req.session["currentUser"] = currentUser;
     res.json(currentUser);
   };
@@ -46,7 +46,7 @@ export default function UserRoutes(app, db) {
     res.json(currentUser);
   };
 
-  const updateProfile = (req, res) => {
+  const updateProfile = async (req, res) => {
     const currentUser = req.session["currentUser"];
     if (!currentUser) {
       res.sendStatus(401);
@@ -54,21 +54,21 @@ export default function UserRoutes(app, db) {
     }
     const userId = currentUser._id;
     const updates = req.body;
-    const updatedUser = dao.updateUser(userId, updates);
+    const updatedUser = await dao.updateUser(userId, updates);
     req.session["currentUser"] = updatedUser;
     res.json(updatedUser);
   };
 
-  const findAllUsers = (req, res) => {
-    const users = dao.findAllUsers();
+  const findAllUsers = async (req, res) => {
+    const users = await dao.findAllUsers();
     res.json(users);
   };
 
-  const deleteUser = (req, res) => {
+  const deleteUser = async (req, res) => {
     const { userId } = req.params;
     console.log("🗑️ DELETE USER:", userId);
 
-    const result = dao.deleteUser(userId);
+    const result = await dao.deleteUser(userId);
 
     if (!result) {
       return res.status(404).json({ message: "User not found" });
@@ -78,12 +78,12 @@ export default function UserRoutes(app, db) {
     res.json({ success: true, message: "User deleted successfully" });
   };
 
-  const updateUserById = (req, res) => {
+  const updateUserById = async (req, res) => {
     const { userId } = req.params;
     const updates = req.body;
     console.log("✏️ UPDATE USER BY ID:", userId, updates);
 
-    const updatedUser = dao.updateUser(userId, updates);
+    const updatedUser = await dao.updateUser(userId, updates);
 
     if (!updatedUser) {
       return res.status(404).json({ message: "User not found" });
@@ -93,10 +93,10 @@ export default function UserRoutes(app, db) {
     res.json(updatedUser);
   };
 
-  const createNewUser = (req, res) => {
+  const createNewUser = async (req, res) => {
     try {
       console.log("📝 CREATE NEW USER:", req.body);
-      const newUser = dao.createUser(req.body);
+      const newUser = await dao.createUser(req.body);
       console.log("✅ User created:", newUser);
       res.json(newUser);
     } catch (error) {
@@ -105,11 +105,11 @@ export default function UserRoutes(app, db) {
     }
   };
 
-  const findUsersForCourse = (req, res) => {
+  const findUsersForCourse = async (req, res) => {
     try {
       const { courseId } = req.params;
       console.log("👥 GET USERS FOR COURSE:", courseId);
-      const users = dao.findUsersForCourse(courseId);
+      const users = await dao.findUsersForCourse(courseId);
       console.log(`✅ Found ${users.length} users for course ${courseId}`);
       res.json(users);
     } catch (error) {
