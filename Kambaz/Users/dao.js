@@ -43,6 +43,13 @@ export default function UsersDao(db) {
     return true;
   };
 
+  const findUsersForCourse = (courseId) => {
+    const { enrollments } = db;
+    return users.filter((user) =>
+      enrollments.some((e) => e.user === user._id && e.course === courseId)
+    );
+  };
+
   return {
     createUser,
     findAllUsers,
@@ -51,5 +58,6 @@ export default function UsersDao(db) {
     findUserByCredentials,
     updateUser,
     deleteUser,
+    findUsersForCourse,
   };
 }

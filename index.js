@@ -10,6 +10,10 @@ import CourseRoutes from "./Kambaz/Courses/routes.js";
 import AssignmentsRoutes from "./Kambaz/Assignments/routes.js";
 import EnrollmentsRoutes from "./Kambaz/Enrollments/routes.js";
 import ModulesRoutes from "./Kambaz/Modules/routes.js";
+import connectDB from "./Kambaz/Database/mongodb.js";
+
+// Connect to MongoDB
+connectDB();
 
 const app = express();
 

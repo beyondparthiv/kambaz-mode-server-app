@@ -1,0 +1,19 @@
+services:
+  - type: web
+    name: kambaz-backend
+    env: node
+    buildCommand: npm install
+    startCommand: npm start
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: MONGODB_URI
+        sync: false
+      - key: SESSION_SECRET
+        generateValue: true
+      - key: CLIENT_URL
+        sync: false
+      - key: SERVER_ENV
+        value: production
+      - key: SERVER_URL
+        sync: false

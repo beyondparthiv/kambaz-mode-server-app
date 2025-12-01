@@ -5,9 +5,13 @@ export default function EnrollmentsDao(db) {
     enrollments.push({ _id: uuidv4(), user: userId, course: courseId });
   }
   function unenrollUserFromCourse(userId, courseId) {
-    db.enrollments = db.enrollments.filter(
-      (e) => !(e.user === userId && e.course === courseId)
-    );
+    const { enrollments } = db;
+    // ✅ MUTATE ARRAY to persist changes
+    for (let i = enrollments.length - 1; i >= 0; i--) {
+      if (enrollments[i].user === userId && enrollments[i].course === courseId) {
+        enrollments.splice(i, 1);
+      }
+    }
   }
   function findMyEnrollments(userId) {
     return db.enrollments.filter((e) => e.user === userId);

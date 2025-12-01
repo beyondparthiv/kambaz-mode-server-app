@@ -59,9 +59,73 @@ export default function UserRoutes(app, db) {
     res.json(updatedUser);
   };
 
+  const findAllUsers = (req, res) => {
+    const users = dao.findAllUsers();
+    res.json(users);
+  };
+
+  const deleteUser = (req, res) => {
+    const { userId } = req.params;
+    console.log("🗑️ DELETE USER:", userId);
+
+    const result = dao.deleteUser(userId);
+
+    if (!result) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    console.log("✅ User deleted");
+    res.json({ success: true, message: "User deleted successfully" });
+  };
+
+  const updateUserById = (req, res) => {
+    const { userId } = req.params;
+    const updates = req.body;
+    console.log("✏️ UPDATE USER BY ID:", userId, updates);
+
+    const updatedUser = dao.updateUser(userId, updates);
+
+    if (!updatedUser) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    console.log("✅ User updated");
+    res.json(updatedUser);
+  };
+
+  const createNewUser = (req, res) => {
+    try {
+      console.log("📝 CREATE NEW USER:", req.body);
+      const newUser = dao.createUser(req.body);
+      console.log("✅ User created:", newUser);
+      res.json(newUser);
+    } catch (error) {
+      console.error("❌ Error creating user:", error);
+      res.status(500).json({ message: error.message || "Failed to create user" });
+    }
+  };
+
+  const findUsersForCourse = (req, res) => {
+    try {
+      const { courseId } = req.params;
+      console.log("👥 GET USERS FOR COURSE:", courseId);
+      const users = dao.findUsersForCourse(courseId);
+      console.log(`✅ Found ${users.length} users for course ${courseId}`);
+      res.json(users);
+    } catch (error) {
+      console.error("❌ Error finding users for course:", error);
+      res.status(500).json({ message: error.message });
+    }
+  };
+
   app.post("/api/users/signin", signin);
   app.post("/api/users/signup", signup);
   app.post("/api/users/signout", signout);
-  app.get("/api/users/profile", profile);  // ← ADD THIS LINE
+  app.get("/api/users/profile", profile);
   app.put("/api/users/profile", updateProfile);
+  app.get("/api/users", findAllUsers);
+  app.get("/api/courses/:courseId/users", findUsersForCourse);
+  app.delete("/api/users/:userId", deleteUser);
+  app.put("/api/users/:userId", updateUserById);
+  app.post("/api/users", createNewUser);
 }

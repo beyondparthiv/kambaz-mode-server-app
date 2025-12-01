@@ -9,7 +9,8 @@ export default function AssignmentsDao(db) {
   }
   function createAssignment(courseId, assignment) {
     const newAssignment = { _id: uuidv4(), title: assignment.title ?? "Untitled", course: courseId };
-    db.assignments = [...db.assignments, newAssignment];
+    // ✅ MUTATE ARRAY to persist changes
+    db.assignments.push(newAssignment);
     return newAssignment;
   }
   function updateAssignment(assignmentId, updates) {
@@ -20,7 +21,11 @@ export default function AssignmentsDao(db) {
   }
   function deleteAssignment(assignmentId) {
     const { assignments } = db;
-    db.assignments = assignments.filter((a) => a._id !== assignmentId);
+    // ✅ MUTATE ARRAY to persist changes
+    const assignmentIndex = assignments.findIndex((a) => a._id === assignmentId);
+    if (assignmentIndex !== -1) {
+      assignments.splice(assignmentIndex, 1);
+    }
     return { status: "ok" };
   }
 
